@@ -4,23 +4,25 @@ const addMovie = (req, res) => {
   const {
     title,
     description,
-    genre_id,
+    genre,
     trailer,
     poster,
     rate,
-    director_id,
-    writer_id,
+    actors,
+    director,
+    writers,
     created_at,
   } = req.body;
   const query = `insert into movies (title,
     description,
-    genre_id,
+    genre,
     trailer,
     poster,
     rate,
-    director_id,
-    writer_id,
-    created_at) Values ('${title}','${description}','${genre_id}','${trailer}','${poster}','${rate}','${director_id}','${writer_id}','${created_at}') RETURNING *`;
+    actors,
+    director,
+    writers,
+    created_at) Values ('${title}','${description}','${genre}','${trailer}','${poster}','${rate}','${actors}','${director}','${writers}','${created_at}') RETURNING *`;
 
   pool
     .query(query)
@@ -28,7 +30,7 @@ const addMovie = (req, res) => {
       res.status(201).json({
         success: true,
         message: "the movie added successfully",
-        result: result.rows,
+        result: result,
       });
     })
     .catch((err) => {
@@ -41,16 +43,7 @@ const addMovie = (req, res) => {
 };
 
 const getMovies = (req, res) => {
-  const query = `
-  SELECT movies.*, 
-         genre.genre_type AS genre_name, 
-         directors.director_name AS director_name, 
-         writers.writer_name AS writer_name 
-  FROM movies 
-  LEFT JOIN genre ON movies.genre_id = genre.id 
-  LEFT JOIN directors ON movies.director_id = directors.id 
-  LEFT JOIN writers ON movies.writer_id = writers.id 
-  WHERE movies.is_deleted = 0`;
+  const query = `select * from movies  WHERE is_deleted=0`;
   pool
     .query(query)
     .then((result) => {
@@ -184,74 +177,6 @@ const getMoviesByWriterId = (req, res) => {
     });
 };
 
-const getMovieById = (req, res) => {
-  const id = req.params.id;
-  const query = `SELECT 
-    movies.*, 
-    directors.director_name AS director_name,
-    writers.writer_name AS writer_name,
-    genre.genre_type AS genre_name,
-    ARRAY_AGG(actors.actor_name) AS actor_names
-FROM movies
-LEFT JOIN genre ON movies.genre_id = genre.id
-LEFT JOIN directors ON movies.director_id = directors.id
-LEFT JOIN writers ON movies.writer_id = writers.id
-LEFT JOIN series_actor ON movies.id = series_actor.series_id  
-LEFT JOIN actors ON series_actor.actor_id = actors.id         
-WHERE movies.id = ${id}
-GROUP BY 
-    movies.id, 
-    directors.director_name, 
-    writers.writer_name, 
-    genre.genre_type;
-`;
-  pool
-    .query(query)
-    .then((result) => {
-      res.status(200).json({
-        success: true,
-        message: `the movie with id : ${id}`,
-        result: result.rows,
-      });
-    })
-    .catch((err) => {
-      res.status(404).json({
-        success: false,
-        message: `no movie found with id : ${id}`,
-        error: err.message,
-      });
-    });
-};
-
-const getMovieByGenreId = (req, res) => {
-  const id = req.params.id;
-  const query = `SELECT * FROM movies WHERE genre_id = $1`;
-
-  pool
-    .query(query, [id])
-    .then((result) => {
-      if (result.rowCount <= 0) {
-        return res.status(200).json({
-          success: true,
-          message: `No movies found for genre ID: ${id}`,
-          result: result.rows,
-        });
-      }
-      res.status(200).json({
-        success: true,
-        message: `Movies retrieved successfully for genre ID: ${id}`,
-        result: result.rows,
-      });
-    })
-    .catch((err) => {
-      res.status(500).json({
-        success: false,
-        message: `Error retrieving movies for genre ID: ${id}`,
-        error: err.message,
-      });
-    });
-};
-
 module.exports = {
   addMovie,
   getMovies,
@@ -259,6 +184,4 @@ module.exports = {
   getMovieByActorId,
   getMoviesByDirectorId,
   getMoviesByWriterId,
-  getMovieById,
-  getMovieByGenreId,
 };

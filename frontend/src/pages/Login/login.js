@@ -5,7 +5,7 @@ import axios from "axios";
 import {
   setLogin,
   setUserId,
-} from "../../Service/redux/reducers/auth/authSlice";
+} from "../../service/redux/reducers/auth/authSlice.js";
 import "./login.css";
 const Login = () => {
   // dispatch action

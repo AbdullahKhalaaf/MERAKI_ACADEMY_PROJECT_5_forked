@@ -147,16 +147,6 @@ function Navbar() {
               >
                 {genres.map((genre) => (
                   <MenuItem
-
-                    key={genre}
-                    onClick={()=>{
-                     
-                      nav(`/genre/)
-                      handleCloseGenreMenu()
-                      
-                    }  
-                    }
-
                     key={genre.id}
                     onClick={() => {
                       nav(
@@ -164,10 +154,8 @@ function Navbar() {
                       );
                       handleCloseGenreMenu();
                     }}
-
                     sx={{ "&:hover": { backgroundColor: "red" } }}
                   >
-                    {/* git */}
                     {console.log(genre.genre_type)}
                     {genre.genre_type}
                   </MenuItem>

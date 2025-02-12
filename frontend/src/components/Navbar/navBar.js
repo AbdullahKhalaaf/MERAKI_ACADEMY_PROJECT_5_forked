@@ -22,7 +22,7 @@ import "./navBar.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setGenre } from "../../Service/redux/reducers/genre/genreSlice";
+import { setGenre } from "../../service/redux/reducers/genre/genreSlice";
 const pages = ["Movies", "Series", "Genre"];
 
 function Navbar() {
@@ -145,7 +145,7 @@ function Navbar() {
                   },
                 }}
               >
-              {genres.map((genre) => (
+                {genres.map((genre) => (
                   <MenuItem
                     key={genre.id}
                     onClick={() => {
@@ -265,15 +265,11 @@ function Navbar() {
                 <ListItem
                   button
                   key={text}
-
-                 
-
                   onClick={() => {
                     if (text === "Admin Dashboard") {
                       nav(`/admin-dashboard`);
                     }
                   }}
-
                   sx={{
                     "&:hover": { backgroundColor: "red" },
                     borderRadius: 1,
@@ -283,7 +279,7 @@ function Navbar() {
                   <ListItemText primary={text} />
                 </ListItem>
               ))}
-               { (
+              {
                 <ListItem
                   button
                   key="Admin Dashboard"
@@ -296,7 +292,7 @@ function Navbar() {
                 >
                   <ListItemText primary="Admin Dashboard" />
                 </ListItem>
-              )}
+              }
             </List>
           </Drawer>
         </Toolbar>

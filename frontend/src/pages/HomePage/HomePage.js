@@ -4,10 +4,9 @@ import Carousel from "react-bootstrap/Carousel";
 import "./slider.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { setMovies } from "../../Service/redux/reducers/movies/movieSlice";
-import { setSeries } from "../../Service/redux/reducers/series/seriesSlice";
+import { setMovies } from "../../service/redux/reducers/movies/movieSlice";
+import { setSeries } from "../../service/redux/reducers/series/seriesSlice";
 import { Modal, Button } from "react-bootstrap";
-
 
 const MovieModal = ({ show, onHide, movie }) => {
   if (!movie) return null;
@@ -40,13 +39,19 @@ const MovieModal = ({ show, onHide, movie }) => {
               allowFullScreen
             ></iframe>
           ) : (
-            <video src={movie.trailer} controls autoPlay style={{ width: "100%" }}></video>
+            <video
+              src={movie.trailer}
+              controls
+              autoPlay
+              style={{ width: "100%" }}
+            ></video>
           )}
           <h4 className="modal-movie-title">{movie.title}</h4>
           <h4 className="modal-movie-description">{movie.genre_name}</h4>
           <h4 className="modal-movie-description">{movie.rate}</h4>
           <h4 className="modal-movie-description">{movie.writer_name}</h4>
           <p className="modal-movie-description">{movie.description}</p>
+
           <Modal.Footer>
             {movie.trailer && (
               <Button
@@ -59,6 +64,8 @@ const MovieModal = ({ show, onHide, movie }) => {
                 Watch Trailer
               </Button>
             )}
+            <span></span>
+            <Button variant="danger">Add to Favorites ❤️ </Button>
           </Modal.Footer>
         </div>
       </Modal.Body>
@@ -68,7 +75,6 @@ const MovieModal = ({ show, onHide, movie }) => {
     </Modal>
   );
 };
-
 
 const HomePage = () => {
   const [index, setIndex] = useState(0);
@@ -156,11 +162,13 @@ const HomePage = () => {
               {movies.length > 0 ? (
                 movies.map((movie) =>
                   movie.section === "Nolan" ? (
-                    <div className="flip-card" key={movie.id}
-                    onClick={()=>{
-                      setSelectedMovie(movie);
-                      setModalShow(true)
-                    }} 
+                    <div
+                      className="flip-card"
+                      key={movie.id}
+                      onClick={() => {
+                        setSelectedMovie(movie);
+                        setModalShow(true);
+                      }}
                     >
                       <div className="flip-card-inner">
                         <div className="flip-card-front">
@@ -199,11 +207,14 @@ const HomePage = () => {
               {series.length > 0 ? (
                 series.map((serie) =>
                   serie.section === "Pouplar" ? (
-                    <div className="flip-card" key={serie.id}
-                    onClick={()=>{
-                      setSelectedMovie(serie);
-                      setModalShow(true)
-                    }}>
+                    <div
+                      className="flip-card"
+                      key={serie.id}
+                      onClick={() => {
+                        setSelectedMovie(serie);
+                        setModalShow(true);
+                      }}
+                    >
                       <div className="flip-card-inner">
                         <div className="flip-card-front">
                           <img
@@ -235,7 +246,11 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-        <MovieModal show={modalShow} onHide={() => setModalShow(false)} movie={selectedMovie} />
+        <MovieModal
+          show={modalShow}
+          onHide={() => setModalShow(false)}
+          movie={selectedMovie}
+        />
       </div>
     </>
   );

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { setMoviesByGenreId } from "../../Service/redux/reducers/movies/movieSlice";
-import { setSeriesByGenreId } from "../../Service/redux/reducers/series/seriesSlice";
+import { setMoviesByGenreId } from "../../service/redux/reducers/movies/movieSlice";
+import { setSeriesByGenreId } from "../../service/redux/reducers/series/seriesSlice";
 import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
 
@@ -37,7 +37,12 @@ const MovieModal = ({ show, onHide, movie }) => {
               allowFullScreen
             ></iframe>
           ) : (
-            <video src={movie.trailer} controls autoPlay style={{ width: "100%" }}></video>
+            <video
+              src={movie.trailer}
+              controls
+              autoPlay
+              style={{ width: "100%" }}
+            ></video>
           )}
           <h4 className="modal-movie-title">{movie.title}</h4>
           <h4 className="modal-movie-description">{movie.genre_name}</h4>
@@ -65,7 +70,6 @@ const MovieModal = ({ show, onHide, movie }) => {
     </Modal>
   );
 };
-
 
 function MovieByGenre() {
   const { genreType, genreId } = useParams();
@@ -102,11 +106,14 @@ function MovieByGenre() {
         <div className="movies-grid">
           {movies.length > 0 ? (
             movies.map((movie) => (
-              <div className="flip-card" key={movie.id}
-              onClick={() => {
-                setSelectedMovie(movie);
-                setModalShow(true);
-              }}>
+              <div
+                className="flip-card"
+                key={movie.id}
+                onClick={() => {
+                  setSelectedMovie(movie);
+                  setModalShow(true);
+                }}
+              >
                 <div className="flip-card-inner">
                   <div className="flip-card-front">
                     <img
@@ -131,7 +138,11 @@ function MovieByGenre() {
             <p>Loading movies...</p>
           )}
         </div>
-        <MovieModal show={modalShow} onHide={() => setModalShow(false)} movie={selectedMovie} />
+        <MovieModal
+          show={modalShow}
+          onHide={() => setModalShow(false)}
+          movie={selectedMovie}
+        />
       </div>
 
       <div className="series-container">
@@ -139,11 +150,14 @@ function MovieByGenre() {
         <div className="movies-grid">
           {series.length > 0 ? (
             series.map((serie) => (
-              <div className="flip-card" key={serie.id}
-              onClick={() => {
-                setSelectedMovie(serie);
-                setModalShow(true);
-              }}>
+              <div
+                className="flip-card"
+                key={serie.id}
+                onClick={() => {
+                  setSelectedMovie(serie);
+                  setModalShow(true);
+                }}
+              >
                 <div className="flip-card-inner">
                   <div className="flip-card-front">
                     <img
@@ -169,7 +183,11 @@ function MovieByGenre() {
           )}
         </div>
       </div>
-      <MovieModal show={modalShow} onHide={() => setModalShow(false)} movie={selectedMovie} />
+      <MovieModal
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+        movie={selectedMovie}
+      />
     </div>
   );
 }

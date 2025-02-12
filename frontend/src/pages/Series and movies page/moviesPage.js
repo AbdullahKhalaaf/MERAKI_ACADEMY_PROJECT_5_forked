@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-
-import { setMovies } from "../../Service/redux/reducers/movies/movieSlice";
+import { setMovies } from "../../service/redux/reducers/movies/movieSlice";
 import { Modal, Button } from "react-bootstrap";
 
 import "./movies.css";
@@ -38,7 +37,12 @@ const MovieModal = ({ show, onHide, movie }) => {
               allowFullScreen
             ></iframe>
           ) : (
-            <video src={movie.trailer} controls autoPlay style={{ width: "100%" }}></video>
+            <video
+              src={movie.trailer}
+              controls
+              autoPlay
+              style={{ width: "100%" }}
+            ></video>
           )}
           <h4 className="modal-movie-title">{movie.title}</h4>
           <h4 className="modal-movie-description">{movie.genre_name}</h4>
@@ -124,7 +128,11 @@ const MoviesPage = () => {
           </div>
         </section>
       ))}
-      <MovieModal show={modalShow} onHide={() => setModalShow(false)} movie={selectedMovie} />
+      <MovieModal
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+        movie={selectedMovie}
+      />
     </div>
   );
 };

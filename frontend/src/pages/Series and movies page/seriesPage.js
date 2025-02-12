@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { setSeries } from "../../Service/redux/reducers/series/seriesSlice";
+import { setSeries } from "../../service/redux/reducers/series/seriesSlice";
 import "./series.css";
 import { useNavigate } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
@@ -37,7 +37,12 @@ const MovieModal = ({ show, onHide, movie }) => {
               allowFullScreen
             ></iframe>
           ) : (
-            <video src={movie.trailer} controls autoPlay style={{ width: "100%" }}></video>
+            <video
+              src={movie.trailer}
+              controls
+              autoPlay
+              style={{ width: "100%" }}
+            ></video>
           )}
           <h4 className="modal-movie-title">{movie.title}</h4>
           <h4 className="modal-movie-description">{movie.genre_name}</h4>
@@ -95,8 +100,14 @@ const SeriesPage = () => {
               series
                 .filter((show) => show.genre_name === genre)
                 .map((show) => (
-                  <div className="flip-card" key={show.id} onClick={()=>{ setSelectedMovie(show);
-                    setModalShow(true);}}>
+                  <div
+                    className="flip-card"
+                    key={show.id}
+                    onClick={() => {
+                      setSelectedMovie(show);
+                      setModalShow(true);
+                    }}
+                  >
                     <div className="flip-card-inner">
                       <div className="flip-card-front">
                         <img
@@ -109,7 +120,6 @@ const SeriesPage = () => {
                         <h2 className="series-title">{show.title}</h2>
                         <p className="series-description">{show.description}</p>
                         <p className="series-rating">⭐ {show.rate}/10</p>
-                        
                       </div>
                     </div>
                   </div>
@@ -120,7 +130,11 @@ const SeriesPage = () => {
           </div>
         </section>
       ))}
-      <MovieModal show={modalShow} onHide={() => setModalShow(false)} movie={selectedMovie} />
+      <MovieModal
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+        movie={selectedMovie}
+      />
     </div>
   );
 };

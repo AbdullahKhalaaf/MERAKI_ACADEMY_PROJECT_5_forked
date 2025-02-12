@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setUsers,
   deleteUser,
-} from "../../Service/redux/reducers/users/usersSlice";
+} from "../../service/redux/reducers/users/usersSlice";
 import axios from "axios";
 import "./dashAdmin.css";
 import { useEffect } from "react";

@@ -11,27 +11,35 @@ import {
   addFav,
 } from "../../service/redux/reducers/fav/favSlice";
 
-const MovieModal = ({ show, onHide, movie }) => {
+const MovieModal = ({ show, onHide, movie, serie }) => {
   const dispatch = useDispatch();
   const favorites = useSelector((state) => state.fav);
   const [alertMessage, setAlertMessage] = useState(null);
   const [alertVariant, setAlertVariant] = useState("");
+  console.log(serie);
+
   if (!movie) return null;
   const isFavorite = favorites.some(
-    (fav) => fav.movie_id === movie.id || fav.series_id === movie.series_id
+    (fav) => fav.movie_id === movie.id || fav.series_id === serie.id
   );
 
   const handleToggleFav = () => {
-    const favData = movie.id ? { movie_id: movie.id } : { series_id: movie.id };
+    const favData =
+      movie.id || serie.id ? { movie_id: movie.id } : { series_id: serie.id };
 
     if (isFavorite) {
       axios
-        .delete(`http://localhost:5000/favorite/remove/${movie.id}`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-          data: favData,
-        })
+        .delete(
+          `http://localhost:5000/favorite/remove/${movie.id || serie.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            data: favData,
+          }
+        )
         .then(() => {
-          dispatch(removeFav(movie.id || movie.series_id));
+          dispatch(removeFav(movie.id || serie.id));
           setAlertMessage("Removed from favorites!");
           setAlertVariant("danger");
         })
@@ -113,6 +121,7 @@ const MovieModal = ({ show, onHide, movie }) => {
             )}
             <Button variant="primary" onClick={handleToggleFav}>
               {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+              {console.log(isFavorite)}
             </Button>
           </Modal.Footer>
         </div>
@@ -132,6 +141,7 @@ function MovieByGenre() {
   const movies = useSelector((state) => state.movies.movies);
   const series = useSelector((state) => state.series.series);
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const [selectedSeries, setSelectedSeries] = useState(null);
   const [modalShow, setModalShow] = useState(false);
 
   useEffect(() => {
@@ -207,7 +217,7 @@ function MovieByGenre() {
                 className="flip-card"
                 key={serie.id}
                 onClick={() => {
-                  setSelectedMovie(serie);
+                  setSelectedSeries(serie);
                   setModalShow(true);
                 }}
               >

@@ -2,19 +2,26 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const favSlice = createSlice({
   name: "fav",
-  initialState: [],
+  initialState: {
+    movieFav: [],
+    seriesFav: [],
+  },
   reducers: {
-    setFav: (state, action) => {
+    setMovieFav: (state, action) => {
+      state.movieFav = action.payload;
       return action.payload;
     },
-    addFav: (state, action) => {
-      state.push(action.payload);
+    setSeriesFav: (state, action) => {
+      state.seriesFav = action.payload;
+      return action.payload;
     },
+   
     removeFav: (state, action) => {
       return state.filter((fav) => fav.id !== action.payload);
     },
   },
 });
 
-export const { setFav, addFav, removeFav } = favSlice.actions;
+export const { setMovieFav, setSeriesFav, addFav, removeFav } =
+  favSlice.actions;
 export default favSlice.reducer;

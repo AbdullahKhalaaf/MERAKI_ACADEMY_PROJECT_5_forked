@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { Modal, Button } from "react-bootstrap";
 import {
-  setFav,
+  setMovieFav,
+  setSeriesFav,
   addFav,
   removeFav,
 } from "../../service/redux/reducers/fav/favSlice";
@@ -14,10 +15,11 @@ const MovieModal = ({ show, onHide, fav }) => {
 
   if (!fav) return null;
 
-  const isFavorite = favorites.some(
-    (favorite) =>
-      favorite.movie_id === fav.movie_id || favorite.series_id === fav.series_id
-  );
+  const isFavorite =
+    favorites.movieFav.some((favorite) => favorite.movie_id === fav.movie_id) ||
+    favorites.seriesFav.some(
+      (favorite) => favorite.series_id === fav.series_id
+    );
 
   const handleToggleFav = () => {
     const favData = fav.movie_id
@@ -26,17 +28,11 @@ const MovieModal = ({ show, onHide, fav }) => {
 
     if (isFavorite) {
       axios
-        .delete(
-          `http://localhost:5000/favorite/remove/${
-            fav.movie_id || fav.series_id
-          }`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-            data: favData,
-          }
-        )
+        .delete("http://localhost:5000/favorite/remove", {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          data: favData,
+        })
+
         .then(() => {
           dispatch(removeFav(fav.movie_id || fav.series_id));
           alert("Removed from favorites!");
@@ -123,15 +119,28 @@ const Fav = () => {
   useEffect(() => {
     if (userId) {
       axios
-        .get("http://localhost:5000/favorite", {
+        .get("http://localhost:5000/favorite/movies", {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         })
         .then((response) => {
-          dispatch(setFav(response.data.result));
+          console.log("response.data.result", response.data.result);
+
+          dispatch(setMovieFav(response.data.result));
         })
         .catch((error) => console.error("Error fetching favorites:", error));
     }
-  }, [dispatch, userId, favorites]);
+
+    axios
+      .get("http://localhost:5000/favorite/series", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      })
+      .then((response) => {
+        dispatch(setSeriesFav(response.data.result));
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  }, [dispatch, userId]);
 
   return (
     <div>

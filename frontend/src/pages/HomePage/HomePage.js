@@ -6,37 +6,56 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { setMovies } from "../../service/redux/reducers/movies/movieSlice";
 import { setSeries } from "../../service/redux/reducers/series/seriesSlice";
+import {
+  addLike,
+  removeLike,
+} from "../../service/redux/reducers/like/likeSlice";
 import { Modal, Button, Alert } from "react-bootstrap";
 import {
   addFav,
   setFav,
   removeFav,
 } from "../../service/redux/reducers/fav/favSlice";
+const MovieModal = ({ show, onHide, movie, series }) => {
+  console.log("series", series);
 
-const MovieModal = ({ show, onHide, movie }) => {
   const dispatch = useDispatch();
-  const favorites = useSelector((state) => state.fav);
 
+  const favorites = useSelector((state) => state.fav);
+  const likes = useSelector((state) => state.fav);
   const [alertMessage, setAlertMessage] = useState(null);
   const [alertVariant, setAlertVariant] = useState("");
+
   if (!movie) return null;
+
   console.log("movie.id", movie.id);
 
   const isFavorite = favorites.some(
-    (fav) => fav.movie_id === movie.id || fav.series_id === movie.series_id
+    (fav) => fav.movie_id === movie.id || fav.series_id === movie.id
+  );
+
+  const isLiked = likes.some(
+    (like) => like.movie_id === movie.id || like.series_id === movie.id
   );
 
   const handleToggleFav = () => {
-    const favData = movie.id ? { movie_id: movie.id } : { series_id: movie.id };
+    const favData = movie.id
+      ? { movie_id: movie.id }
+      : { series_id: series.id };
 
     if (isFavorite) {
       axios
-        .delete(`http://localhost:5000/favorite/remove/${movie.id}`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-          data: favData,
-        })
+        .delete(
+          `http://localhost:5000/favorite/remove/${movie.id || series.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            data: favData,
+          }
+        )
         .then(() => {
-          dispatch(removeFav(movie.id || movie.series_id));
+          dispatch(removeFav(movie.id || series.id));
           setAlertMessage("Removed from favorites!");
           setAlertVariant("danger");
         })
@@ -47,11 +66,43 @@ const MovieModal = ({ show, onHide, movie }) => {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         })
         .then((res) => {
+          console.log("res.data.favorite", res.data.favorite);
+
           dispatch(addFav(res.data.favorite));
           setAlertMessage("Added to favorites!");
           setAlertVariant("success");
         })
         .catch((err) => console.log("Error:", err));
+    }
+  };
+  const handleToggleLike = () => {
+    const likeData = movie.id
+      ? { movie_id: movie.id }
+      : { series_id: movie.id };
+
+    if (isLiked) {
+      axios
+        .post(`http://localhost:5000/like/unlike`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          data: likeData,
+        })
+        .then(() => {
+          dispatch(removeLike(movie.id));
+        })
+        .catch((err) => {
+          console.log("err", err);
+        });
+    } else {
+      axios
+        .post(`http://localhost:5000/like/addlike`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          data: likeData,
+        })
+        .then((res) => {
+          dispatch(addLike(res.data.like));
+          console.log("res", res);
+        })
+        .catch((err) => console.log("err", err));
     }
   };
 
@@ -121,6 +172,9 @@ const MovieModal = ({ show, onHide, movie }) => {
             <Button variant="primary" onClick={handleToggleFav}>
               {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
             </Button>
+            <button onClick={handleToggleLike}>
+              {isLiked ? "Unlike" : "like"}
+            </button>
           </Modal.Footer>
         </div>
       </Modal.Body>

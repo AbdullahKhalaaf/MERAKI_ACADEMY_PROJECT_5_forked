@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Carousel from "react-bootstrap/Carousel";
+
 import "./slider.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { setMovies } from "../../service/redux/reducers/movies/movieSlice";
 import { setSeries } from "../../service/redux/reducers/series/seriesSlice";
 import { Modal, Button, Alert } from "react-bootstrap";
+
 import {
   addFav,
   setFav,
@@ -160,6 +162,7 @@ const HomePage = () => {
   const handleSelect = (selectedIndex) => {
     setIndex(selectedIndex);
   };
+  const limitedMovies = movies.slice(0, 10);
 
   return (
     <>

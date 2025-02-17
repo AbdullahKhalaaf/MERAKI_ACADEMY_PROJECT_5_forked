@@ -37,6 +37,7 @@ const MovieModal = ({ show, onHide, movie }) => {
   const favorites = useSelector((state) => state.fav);
   const [alertMessage, setAlertMessage] = useState(null);
   const [alertVariant, setAlertVariant] = useState("");
+  const nav = useNavigate();
   if (!movie) return null;
   const isFavorite = favorites.some(
     (fav) => fav.movie_id === movie.id || fav.series_id === movie.series_id
@@ -123,18 +124,15 @@ const MovieModal = ({ show, onHide, movie }) => {
           <Modal.Footer>
             {movie.trailer && (
               <Button
+                variant="danger"
                 style={{
                   backgroundColor: "#ff4444",
                   fontWeight: "bold",
                   color: "white",
                 }}
-                variant="danger"
-                as="a"
-                href={movie.trailer}
-                target="_blank"
-                rel="noopener noreferrer"
+                onClick={() => nav("/FullScreen", { state: { movie } })}
               >
-                Watch Trailer
+                Watch now
               </Button>
             )}
             <Button
@@ -151,8 +149,7 @@ const MovieModal = ({ show, onHide, movie }) => {
           </Modal.Footer>
         </div>
       </Modal.Body>
-      <Modal.Footer>
-      </Modal.Footer>
+      <Modal.Footer></Modal.Footer>
     </Modal>
   );
 };
@@ -168,9 +165,8 @@ function Navbar() {
   const genres = useSelector((state) => state.genre.genre);
   const movies = useSelector((state) => state.movies.movies);
   const series = useSelector((state) => state.series.series);
-  const userId = localStorage.getItem('userId')
+  const userId = localStorage.getItem("userId");
 
-  
   const [searchResultMovie, setsearchResultMovie] = useState([]);
   const [searchResultSeries, setsearchResultSeries] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
@@ -423,8 +419,8 @@ function Navbar() {
                       onClick={() => {
                         setSelectedMovie(movie);
                         setModalShow(true);
-                        setsearchResultMovie('');
-                        setsearchResultSeries('')
+                        setsearchResultMovie("");
+                        setsearchResultSeries("");
                       }}
                     >
                       <ListItemText primary={movie.title} />
@@ -448,8 +444,8 @@ function Navbar() {
                       onClick={() => {
                         setSelectedMovie(serie);
                         setModalShow(true);
-                        setsearchResultMovie('');
-                        setsearchResultSeries('')
+                        setsearchResultMovie("");
+                        setsearchResultSeries("");
                       }}
                     >
                       <ListItemText primary={serie.title} />
@@ -470,8 +466,6 @@ function Navbar() {
               </Paper>
             )}
           </div>
-
-      
 
           <IconButton
             edge="end"
@@ -503,15 +497,14 @@ function Navbar() {
             }}
           >
             <List>
-              {['Logout',"About Us" ].map((text) => (
+              {["Logout", "About Us"].map((text) => (
                 <ListItem
                   button
                   key={text}
                   onClick={() => {
-                    
-                   if (text === 'Logout'){
-                      localStorage.clear()
-                      nav('/login')
+                    if (text === "Logout") {
+                      localStorage.clear();
+                      nav("/login");
                     }
                   }}
                   sx={{
@@ -523,8 +516,8 @@ function Navbar() {
                   <ListItemText primary={text} />
                 </ListItem>
               ))}
-              { userId == 1 || userId == 2 || userId == 3 ? (
-                <ListItem 
+              {userId == 1 || userId == 2 || userId == 3 ? (
+                <ListItem
                   button
                   key="Admin Dashboard"
                   onClick={() => nav("/admin-dashboard")}
@@ -536,8 +529,7 @@ function Navbar() {
                 >
                   <ListItemText primary="Admin Dashboard" />
                 </ListItem>
-              ):null
-              }
+              ) : null}
             </List>
           </Drawer>
         </Toolbar>
